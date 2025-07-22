@@ -1,0 +1,11 @@
+/* ضع هنا كل أنماط CSS من الملف الأصلي */
+:root {
+  --gold: #d4af37;
+  --dark: #1a1a1a;
+  --light: #f8f8f8;
+}
+
+body {
+  font-family: 'Playfair Display', serif;
+  /* ... */
+}

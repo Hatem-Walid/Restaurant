@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="assets/nusret.svg">
+    <title> Nusr-Et | Luxury Dining Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark: #1a1a1a;
+            --light: #f8f8f8;
+        }
+        
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg>'), auto;
+        }
+        
+        .gold-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .gold-hover:hover {
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .gold-border-hover {
+            transition: all 0.3s ease;
+            border-color: transparent;
+        }
+        
+        .gold-border-hover:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .gold-bg-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .gold-bg-hover:hover {
+            background-color: var(--gold);
+            color: var(--dark);
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        
+        .menu-item {
+            transition: transform 0.3s ease;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .scroll-animate.left {
+            transform: translateX(-50px);
+        }
+        
+        .scroll-animate.right {
+            transform: translateX(50px);
+        }
+        
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translate(0);
+        }
+        
+        .steak-transform {
+            transition: all 1s ease;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .auth-content {
+            background-color: var(--dark);
+            border: 1px solid var(--gold);
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .close-auth {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--gold);
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: transparent;
+            border: 1px solid var(--gold);
+            color: var(--light);
+        }
+        
+        .steak-swap-container {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+        }
+        
+        .steak-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: opacity 1s ease;
+        }
+        
+        .cursor-effect {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(212, 175, 55, 0.3);
+            border: 2px solid var(--gold);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: all 0.2s ease;
+            mix-blend-mode: difference;
+        }
+        
+        .cursor-effect.active {
+            transform: translate(-50%, -50%) scale(0.5);
+            background-color: var(--gold);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background-color: var(--dark);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: right 0.3s ease;
+                z-index: 900;
+            }
+            
+            .nav-menu.active {
+                right: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .steak-swap-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor Effect -->
+    <div class="cursor-effect"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black bg-opacity-20 ">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold gold-hover">
+                <span class="text-gold-500" style="color: var(--gold);"><img src="assets/nusret.svg" alt="logo"></span>
+            </div>
+            
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#home" class="text-white gold-hover">HOME</a>
+                <a href="#about" class="text-white gold-hover">ABOUT</a>
+                <a href="#menu" class="text-white gold-hover">MENU</a>
+                <a href="#gallery" class="text-white gold-hover">GALLERY</a>
+                <a href="#contact" class="text-white gold-hover">CONTACT</a>
+                <button id="auth-btn" class="px-4 gold-hover">LOGIN</button>
+            </div>
+            
+            <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <div id="nav-menu" class="nav-menu md:hidden">
+            <div class="flex flex-col space-y-6 text-center">
+                <a href="#home" class="text-white gold-hover text-xl">HOME</a>
+                <a href="#about" class="text-white gold-hover text-xl">ABOUT</a>
+                <a href="#menu" class="text-white gold-hover text-xl">MENU</a>
+                <a href="#gallery" class="text-white gold-hover text-xl">GALLERY</a>
+                <a href="#contact" class="text-white gold-hover text-xl">CONTACT</a>
+                <button id="mobile-auth-btn" class="px-4 py-2 border border-gold-500 gold-border-hover mx-auto" style="border-color: var(--gold);">LOGIN</button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center bg-black overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-50"></div>
+        <img src="assets/nusr-et3200001_m.jpg" class="absolute w-full h-full object-cover">
+            
+        
+        <div class="relative z-10 text-center px-4">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white neon-text">
+                <span class="text-white">NUSR</span>
+                <span style="color: var(--gold);">.ET</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-white mb-8 max-w-2xl mx-auto">A SPECTACULAR MEAT FEAST FOR ALL YOUR SENSES</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#reservation" class="px-8 py-3 bg-gold-500 text-black font-bold gold-bg-hover rounded-full shadow-lg hover:shadow-gold transition-all duration-300" style="background-color: var(--gold);">RESERVE A TABLE</a>
+                <a href="#menu" class="px-8 py-3 border border-gold-500 text-white font-bold gold-border-hover rounded-full hover:bg-gold-500 hover:bg-opacity-10 transition-all duration-300" style="border-color: var(--gold);">VIEW MENU</a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-10 left-0 right-0 text-center">
+            <a href="#about" class="text-white text-2xl animate-bounce inline-block gold-hover">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-4xl font-bold text-center mb-16 text-white neon-text">OUR CHEF</h2>
+            
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2 scroll-animate left">
+                    <div class="relative overflow-hidden rounded-lg gold-border-hover" style="border: 1px solid var(--gold);">
+                        <img src="assets/about.jpg" 
+                             alt="Restaurant Interior" 
+                             class="w-full h-auto transition-transform duration-500 hover:scale-105">
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 scroll-animate right">
+                    <h3 class="text-3xl font-bold mb-6 text-white" style="color: var(--gold);">Nusr-Et Experience</h3>
+                    <p class="text-gray-300 mb-4">You will taste an exquisite menu, be mesmerised by fantastic aromas, enchanted by everything you touch, fascinated by everything you hear. </p>
+                    <p class="text-gray-300 mb-6">You will see glamorous people, delightful presentations and incredible shows. Be entertained, amused and pampered: a guaranteed luxury dining experience like never before...</p>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-award text-2xl mr-2" style="color: var(--gold);"></i>
+                            <span class="text-white">Michelin Star 2024</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-award text-2xl mr-2" style="color: var(--gold);"></i>
+                            <span class="text-white">World's Best Steak 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Steak Transformation Section -->
+    <section class="py-20 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-4xl font-bold text-center mb-16 text-white neon-text">OUR CRAFT</h2>
+            
+            <div class="steak-swap-container mb-12">
+                <div id="steak-raw" class="steak-image" style="background-image: url('assets/1.png'); opacity: 1;"></div>
+                <div id="steak-cooked" class="steak-image" style="background-image: url('assets/2.png'); opacity: 0;"></div>
+            </div>
+            
+            <div class="text-center max-w-3xl mx-auto scroll-animate">
+                <h3 class="text-3xl font-bold mb-6 text-white" style="color: var(--gold);">A MASTERPIECE OF STEAK</h3>
+                <p class="text-gray-300 mb-6">Unlocking the flavour of steak is an art. It requires perfection, passion, and precision. It is about crafting the entire experience – one that’s delicate, yet strong, sensational, artisan, local yet global.</p>
+                <p class="text-gray-300">Our chefs undergo rigorous training to master the art of cooking steak, ensuring every cut is prepared to your exact specifications.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Menu Section -->
+    <section id="menu" class="py-20 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-4xl font-bold text-center mb-16 text-white neon-text">OUR MENU</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Menu Item 1 -->
+                <div class="menu-item scroll-animate gold-border-hover p-6" style="border: 1px solid var(--gold);">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-white">GOLDEN TOMAHAWK</h3>
+                        <span class="text-xl" style="color: var(--gold);">$120</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">42oz premium cut, dry-aged for 28 days, served with truffle butter</p>
+                    <div class="flex items-center text-sm text-gray-400">
+                        <i class="fas fa-fire mr-1" style="color: var(--gold);"></i>
+                        <span>Recommended: Medium Rare</span>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 2 -->
+                <div class="menu-item scroll-animate gold-border-hover p-6" style="border: 1px solid var(--gold);">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-white">JAPANESE A5 WAGYU</h3>
+                        <span class="text-xl" style="color: var(--gold);">$180</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">Marbled to perfection, served with wasabi foam and gold leaf</p>
+                    <div class="flex items-center text-sm text-gray-400">
+                        <i class="fas fa-fire mr-1" style="color: var(--gold);"></i>
+                        <span>Recommended: Medium</span>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 3 -->
+                <div class="menu-item scroll-animate gold-border-hover p-6" style="border: 1px solid var(--gold);">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-white">FILET MIGNON</h3>
+                        <span class="text-xl" style="color: var(--gold);">$95</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">8oz tender cut, served with wild mushroom sauce</p>
+                    <div class="flex items-center text-sm text-gray-400">
+                        <i class="fas fa-fire mr-1" style="color: var(--gold);"></i>
+                        <span>Recommended: Rare to Medium Rare</span>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 4 -->
+                <div class="menu-item scroll-animate gold-border-hover p-6" style="border: 1px solid var(--gold);">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-white">RIBEYE CAP</h3>
+                        <span class="text-xl" style="color: var(--gold);">$110</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">12oz spinalis dorsi, the most flavorful cut, served with bone marrow</p>
+                    <div class="flex items-center text-sm text-gray-400">
+                        <i class="fas fa-fire mr-1" style="color: var(--gold);"></i>
+                        <span>Recommended: Medium</span>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 5 -->
+                <div class="menu-item scroll-animate gold-border-hover p-6" style="border: 1px solid var(--gold);">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-white">GOLDEN BURGER</h3>
+                        <span class="text-xl" style="color: var(--gold);">$65</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">Wagyu beef patty with foie gras, truffle aioli, and gold leaf brioche</p>
+                    <div class="flex items-center text-sm text-gray-400">
+                        <i class="fas fa-fire mr-1" style="color: var(--gold);"></i>
+                        <span>Recommended: Medium</span>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 6 -->
+                <div class="menu-item scroll-animate gold-border-hover p-6" style="border: 1px solid var(--gold);">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-white">SURF & TURF</h3>
+                        <span class="text-xl" style="color: var(--gold);">$150</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">8oz filet mignon with Maine lobster tail and béarnaise sauce</p>
+                    <div class="flex items-center text-sm text-gray-400">
+                        <i class="fas fa-fire mr-1" style="color: var(--gold);"></i>
+                        <span>Recommended: Medium Rare</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="px-8 py-3 border border-gold-500 text-white font-bold gold-border-hover inline-block" style="border-color: var(--gold);">VIEW FULL MENU</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-4xl font-bold text-center mb-16 text-white neon-text">GALLERY</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item scroll-animate left overflow-hidden rounded-lg gold-border-hover" style="border: 1px solid var(--gold);">
+                    <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
+                         alt="Steak Preparation" 
+                         class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
+                </div>
+                
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item scroll-animate overflow-hidden rounded-lg gold-border-hover" style="border: 1px solid var(--gold);">
+                    <img src="assets/7_m.jpg" 
+                         alt="Restaurant Interior" 
+                         class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
+                </div>
+                
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item scroll-animate right overflow-hidden rounded-lg gold-border-hover" style="border: 1px solid var(--gold);">
+                    <img src="assets/4source_m.jpg" 
+                         alt="Dining Experience" 
+                         class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
+                </div>
+                
+                <!-- Gallery Item 4 -->
+                <div class="gallery-item scroll-animate left overflow-hidden rounded-lg gold-border-hover" style="border: 1px solid var(--gold);">
+                    <img src="assets/galary2.jpg" 
+                         alt="Chef Cooking" 
+                         class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
+                </div>
+                
+                <!-- Gallery Item 5 -->
+                <div class="gallery-item scroll-animate overflow-hidden rounded-lg gold-border-hover" style="border: 1px solid var(--gold);">
+                    <img src="assets/nusret-special_m.jpg" 
+                         alt="Wine Selection" 
+                         class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
+                </div>
+                
+                <!-- Gallery Item 6 -->
+                <div class="gallery-item scroll-animate right overflow-hidden rounded-lg gold-border-hover" style="border: 1px solid var(--gold);">
+                    <img src="https://images.unsplash.com/photo-1588168333986-5078d3ae3976?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" 
+                         alt="Finished Dish" 
+                         class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Reservation Section -->
+    <section id="reservation" class="py-20 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-4xl font-bold text-center mb-16 text-white neon-text">RESERVATIONS</h2>
+            
+            <div class="max-w-2xl mx-auto scroll-animate">
+                <form class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Time</label>
+                            <input type="time" id="time" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guests">Number of Guests</label>
+                            <input type="number" id="guests" min="1" max="12" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="special-requests">Special Requests</label>
+                        <textarea id="special-requests" class="w-full p-2 bg-transparent border border-gold-500" style="border-color: var(--gold); color: var(--light);" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-gold-500 text-black font-bold gold-bg-hover" style="background-color: var(--gold);">BOOK TABLE</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-4xl font-bold text-center mb-16 text-white neon-text">CONTACT US</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="scroll-animate left">
+                    <h3 class="text-2xl font-bold mb-6 text-white" style="color: var(--gold);">Visit Us</h3>
+                    <p class="text-gray-300 mb-4"><i class="fas fa-map-marker-alt mr-2" style="color: var(--gold);"></i> 121 Golden Avenue, New York, NY 10025</p>
+                    <p class="text-gray-300 mb-4"><i class="fas fa-phone mr-2" style="color: var(--gold);"></i> +1 (212) 525-3651</p>
+                    <p class="text-gray-300 mb-4"><i class="fas fa-envelope mr-2" style="color: var(--gold);"></i> Nusr-Et@Gmail.com</p>
+                    <p class="text-gray-300 mb-4"><i class="fas fa-clock mr-2" style="color: var(--gold);"></i> Open Daily: 5:00 PM - 11:00 PM</p>
+                </div>
+                
+                <div class="scroll-animate right">
+                    <h3 class="text-2xl font-bold mb-6 text-white" style="color: var(--gold);">Our Location</h3>
+                    <div class="aspect-w-16 aspect-h-9 gold-border-hover" style="border: 1px solid var(--gold);">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215256018003!2d-73.987844924164!3d40.7484409713896!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1689876423581!5m2!1sen!2sus" 
+                                width="100%" 
+                                height="300" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    <h3 class="text-2xl font-bold mt-6 mb-6 text-white" style="color: var(--gold);">Follow Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-2xl text-white gold-hover"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-2xl text-white gold-hover"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-2xl text-white gold-hover"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-2xl text-white gold-hover"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-black border-t border-gray-800">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">&copy; 2026 Nusr-Et. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-content">
+            <span class="close-auth">&times;</span>
+            <h2 class="text-2xl font-bold mb-6 text-center" style="color: var(--gold);">LOGIN / REGISTER</h2>
+            <form id="auth-form">
+                <div class="form-group">
+                    <label for="auth-email">Email</label>
+                    <input type="email" id="auth-email" required>
+                    <div id="login-email-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                </div>
+                <div class="form-group">
+                    <label for="auth-password">Password</label>
+                    <input type="password" id="auth-password" required minlength="6">
+                    <div id="login-password-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                </div>
+                <button type="submit" class="w-full py-2 bg-gold-500 text-black font-bold gold-bg-hover mb-4" style="background-color: var(--gold);">LOGIN</button>
+                <div id="login-error" class="text-red-500 text-center mb-4 hidden"></div>
+                <p class="text-center text-gray-300">Don't have an account? <a href="#" id="switch-to-register" class="gold-hover" style="color: var(--gold);">Register</a></p>
+            </form>
+            
+            <form id="register-form" class="hidden">
+                <div class="form-group">
+                    <label for="reg-name">Full Name</label>
+                    <input type="text" id="reg-name" required>
+                    <div id="register-name-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" required>
+                    <div id="register-email-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password (min 6 characters)</label>
+                    <input type="password" id="reg-password" required minlength="6">
+                    <div id="register-password-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm">Confirm Password</label>
+                    <input type="password" id="reg-confirm" required>
+                    <div id="register-confirm-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                </div>
+                <button type="submit" class="w-full py-2 bg-gold-500 text-black font-bold gold-bg-hover mb-4" style="background-color: var(--gold);">REGISTER</button>
+                <div id="register-error" class="text-red-500 text-center mb-4 hidden"></div>
+                <p class="text-center text-gray-300">Already have an account? <a href="#" id="switch-to-login" class="gold-hover" style="color: var(--gold);">Login</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const navMenu = document.getElementById('nav-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Smooth Scrolling for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    navMenu.classList.remove('active');
+                }
+            });
+        });
+
+        // Auth Modal
+        const authBtn = document.getElementById('auth-btn');
+        const mobileAuthBtn = document.getElementById('mobile-auth-btn');
+        const authModal = document.getElementById('auth-modal');
+        const closeAuth = document.querySelector('.close-auth');
+        const switchToRegister = document.getElementById('switch-to-register');
+        const switchToLogin = document.getElementById('switch-to-login');
+        const authForm = document.getElementById('auth-form');
+        const registerForm = document.getElementById('register-form');
+
+        [authBtn, mobileAuthBtn].forEach(btn => {
+            btn.addEventListener('click', () => {
+                authModal.style.display = 'flex';
+                authForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            });
+        });
+
+        closeAuth.addEventListener('click', () => {
+            authModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
+            }
+        });
+
+        switchToRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            authForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+        });
+
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            authForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+        });
+
+        // User data storage (in a real app, this would be server-side)
+        let users = JSON.parse(localStorage.getItem('steakhouse-users')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('steakhouse-current-user')) || null;
+
+        // Update UI based on auth state
+        function updateAuthUI() {
+            if (currentUser) {
+                authBtn.textContent = 'LOGOUT';
+                if (mobileAuthBtn) mobileAuthBtn.textContent = 'LOGOUT';
+            } else {
+                authBtn.textContent = 'LOGIN';
+                if (mobileAuthBtn) mobileAuthBtn.textContent = 'LOGIN';
+            }
+        }
+
+        // Clear all error messages
+        function clearErrors() {
+            document.querySelectorAll('[id$="-error"]').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+        }
+
+        // Form Submissions
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearErrors();
+            
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            let isValid = true;
+
+            // Basic validation
+            if (!email) {
+                document.getElementById('login-email-error').textContent = 'Email is required';
+                document.getElementById('login-email-error').classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (!password) {
+                document.getElementById('login-password-error').textContent = 'Password is required';
+                document.getElementById('login-password-error').classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Check user credentials
+            const user = users.find(u => u.email === email && u.password === password);
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('steakhouse-current-user', JSON.stringify(currentUser));
+                updateAuthUI();
+                authModal.style.display = 'none';
+                alert(`Welcome back, ${user.name}!`);
+            } else {
+                document.getElementById('login-error').textContent = 'Invalid email or password';
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        });
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearErrors();
+            
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            let isValid = true;
+
+            // Validation
+            if (!name) {
+                document.getElementById('register-name-error').textContent = 'Name is required';
+                document.getElementById('register-name-error').classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (!email) {
+                document.getElementById('register-email-error').textContent = 'Email is required';
+                document.getElementById('register-email-error').classList.remove('hidden');
+                isValid = false;
+            } else if (users.some(u => u.email === email)) {
+                document.getElementById('register-email-error').textContent = 'Email already registered';
+                document.getElementById('register-email-error').classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (!password) {
+                document.getElementById('register-password-error').textContent = 'Password is required';
+                document.getElementById('register-password-error').classList.remove('hidden');
+                isValid = false;
+            } else if (password.length < 6) {
+                document.getElementById('register-password-error').textContent = 'Password must be at least 6 characters';
+                document.getElementById('register-password-error').classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (password !== confirm) {
+                document.getElementById('register-confirm-error').textContent = 'Passwords do not match';
+                document.getElementById('register-confirm-error').classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Register new user
+            const newUser = { name, email, password };
+            users.push(newUser);
+            localStorage.setItem('steakhouse-users', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('steakhouse-current-user', JSON.stringify(currentUser));
+            updateAuthUI();
+            
+            authModal.style.display = 'none';
+            alert(`Welcome to Golden Steakhouse, ${name}!`);
+        });
+
+        // Handle logout
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('steakhouse-current-user');
+            updateAuthUI();
+            alert('You have been logged out.');
+        }
+
+        // Update auth button click handler
+        [authBtn, mobileAuthBtn].forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (currentUser) {
+                    handleLogout();
+                } else {
+                    authModal.style.display = 'flex';
+                    authForm.classList.remove('hidden');
+                    registerForm.classList.add('hidden');
+                    clearErrors();
+                }
+            });
+        });
+
+        // Initialize auth UI
+        updateAuthUI();
+
+        // Steak Image Swap Animation
+        const steakRaw = document.getElementById('steak-raw');
+        const steakCooked = document.getElementById('steak-cooked');
+        
+        function swapSteakImages() {
+            if (steakRaw.style.opacity === '1') {
+                steakRaw.style.opacity = '0';
+                steakCooked.style.opacity = '1';
+            } else {
+                steakRaw.style.opacity = '1';
+                steakCooked.style.opacity = '0';
+            }
+        }
+
+        setInterval(swapSteakImages, 3000);
+
+        // Scroll Animation
+        const scrollElements = document.querySelectorAll('.scroll-animate');
+        
+        const elementInView = (el) => {
+            const elementTop = el.getBoundingClientRect().top;
+            return elementTop <= (window.innerHeight || document.documentElement.clientHeight);
+        };
+        
+        const displayScrollElement = (element) => {
+            element.classList.add('visible');
+        };
+        
+        const handleScrollAnimation = () => {
+            scrollElements.forEach((el) => {
+                if (elementInView(el, 100)) {
+                    displayScrollElement(el);
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', () => {
+            handleScrollAnimation();
+        });
+
+        // Initialize - show elements that are already in view
+        handleScrollAnimation();
+
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor-effect');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('active');
+        });
+        
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('active');
+        });
+        
+        document.querySelectorAll('a, button, input, textarea, .menu-item, .gallery-item').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(0.7)';
+                cursor.style.backgroundColor = 'var(--gold)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursor.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
+            });
+        });
+    </script>
+</body>
+</html>
